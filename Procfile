@@ -1,0 +1,1 @@
+web: java -jar target/navfit99-server-1.0-jar-with-dependencies.jar
