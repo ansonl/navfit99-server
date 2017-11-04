@@ -44,7 +44,7 @@ public class JedisManager {
 	private static String navfitDataPrefix = "data";
 	private static String navfitEditorPrefix = "editors";
 
-	private static String editorPrefix = "editors";
+	private static String editorPrefix = "editor";
 	private static String editorAuthTokenPrefix = "tokens";
 
 	public static boolean checkNavFitUUIDExists(String navfitUUID) {
@@ -161,7 +161,10 @@ public class JedisManager {
 		String navfitDataKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitDataPrefix);
 
 		String reply = jedis.get(navfitDataKey);
-		return reply;
+
+		String aesOutput = Encryptor.decrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), reply);
+
+		return aesOutput;
 	}
 
 	public static String getNavFitDataForNavFitUUID(String navfitUUID, String editorID, String authToken) throws Exception {
@@ -182,13 +185,16 @@ public class JedisManager {
 		String navfitEditorKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitEditorPrefix);
 
 		String navfitJSONString = navfitObj.toJSONString();
+
+		String aesOutput = Encryptor.encrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), navfitJSONString);
+
 		String reply;
 	  if (expire) {
-	  	reply = jedis.setex(navfitDataKey, 60*60, navfitJSONString);
+	  	reply = jedis.setex(navfitDataKey, 60*60, aesOutput);
 	  	if (reply.equals("OK"))
 	  		jedis.expire(navfitEditorKey, 60*60);
 	  } else {
-	  	reply = jedis.set(navfitDataKey, navfitJSONString);
+	  	reply = jedis.set(navfitDataKey, aesOutput);
 	  }
 
 	  if (!reply.equals("OK")) {
