@@ -55,12 +55,23 @@ public class JedisManager {
 		}	
 	}
 
+	private static void setExpirationForEditorID(String editorID, Jedis jedis) {
+		String editorTokenKey = String.format("%s:%s:%s", editorPrefix, editorID, editorAuthTokenPrefix);
+
+		jedis.expire(editorID, 60*60);
+	}
+
 	private static boolean authenticateEditorIDForAuthToken(String editorID, String authToken, Jedis jedis) {
 		String editorTokenKey = String.format("%s:%s:%s", editorPrefix, editorID, editorAuthTokenPrefix);
 
-		Boolean reply = jedis.sismember(editorTokenKey, authToken);
+		boolean reply = jedis.sismember(editorTokenKey, authToken).booleanValue();
 
-		return reply.booleanValue();
+		//extend all auth token expirations for editorID
+		if (reply) {
+			setExpirationForEditorID(editorID, jedis);
+		}
+
+		return reply;
 	}
 
 	//Check user authenticity -> If navfit is public -> If user is editor for navfit
