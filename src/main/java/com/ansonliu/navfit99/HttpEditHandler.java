@@ -87,8 +87,10 @@ public class HttpEditHandler implements HttpHandler {
 						//Overwrite old file
 						//NavFitManagement.writeNavFitToFileSystem(updatedNavFit, targetUUID);
 
-						NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken);
-						return (new JSONResponse(0, "NavFit updated (overwrite mode). ", null, null)).toJSONString();
+						if (NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken))
+							return (new JSONResponse(0, "NavFit updated (overwrite mode). ", null, null)).toJSONString();
+						else 
+							return (new JSONResponse(-1, "Update fail", null, null)).toJSONString();
 					case 3: //delete
 						try {
 						  NavFitManagement.deleteFile(targetUUID);
@@ -154,8 +156,10 @@ public class HttpEditHandler implements HttpHandler {
 						//Overwrite old file
 						//NavFitManagement.writeNavFitToFileSystem(updatedNavFit, targetUUID);
 
-						NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken);
-						return (new JSONResponse(0, "Report updated", null, null)).toJSONString();
+						if (NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken))
+							return (new JSONResponse(0, "Report updated", null, null)).toJSONString();
+						else
+							return (new JSONResponse(-1, "Update fail", null, null)).toJSONString();
 					case 3: //delete
 						Integer clientReportID = Integer.valueOf(clientReport.valueMap.get("ReportID").toString());
 						if (!updatedNavFit.deleteReportForReportID(clientReportID)) {
