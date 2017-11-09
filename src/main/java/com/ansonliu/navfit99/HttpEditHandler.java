@@ -70,8 +70,8 @@ public class HttpEditHandler implements HttpHandler {
 
 		NavFitDatabase updatedNavFit;
 		try {
-			updatedNavFit = new NavFitDatabase(targetUUID);
-		} catch (NavFit99FatalException ex) {
+			updatedNavFit = NavFitManagement.getNavFitDatabaseFromString(JedisManager.getNavFitDataForNavFitUUID(targetUUID, editorID, authToken));
+		} catch (Exception ex) {
 			return (new JSONResponse(-1, ex.getMessage(), null, null)).toJSONString();
 		}
 
@@ -123,8 +123,12 @@ public class HttpEditHandler implements HttpHandler {
 						//Overwrite old file
 						//NavFitManagement.writeNavFitToFileSystem(updatedNavFit, targetUUID);
 
-						NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken);
-						return (new JSONResponse(0, "Folder updated", null, null)).toJSONString();
+						if (NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken)) {
+							return (new JSONResponse(0, "Folder updated", null, null)).toJSONString();
+						} else {
+							return (new JSONResponse(-1, "Update fail", null, null)).toJSONString();
+						}
+						
 					case 3: //delete
 						Integer clientFolderID = Integer.valueOf(clientFolder.valueMap.get("FolderID").toString());
 						if (!updatedNavFit.deleteFolderForFolderID(clientFolderID)) {

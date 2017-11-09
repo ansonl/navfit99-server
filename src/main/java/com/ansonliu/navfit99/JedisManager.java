@@ -46,6 +46,7 @@ public class JedisManager {
 
 	private static String editorPrefix = "editor";
 	private static String editorAuthTokenPrefix = "tokens";
+	private static String editorNavFitPrefix = "navfits";
 
 	public static boolean checkNavFitUUIDExists(String navfitUUID) {
 		try (Jedis jedis = pool.getResource()) {
@@ -112,7 +113,12 @@ public class JedisManager {
 	private static void addEditorForNavFitUUID(String navfitUUID, String editorID, Jedis jedis) {
 		String navfitEditorKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitEditorPrefix);
 
+		String editorNavFitsKey = String.format("%s:%s:%s", editorPrefix, editorID, editorNavFitPrefix);
+
 		Long reply = jedis.sadd(navfitEditorKey, editorID);	
+
+		//add navfituuid to editor:XXX:navfits key
+		jedis.sadd(editorNavFitsKey, navfitUUID);	
 	}
 
 	//Add editor to NavFit WITHOUT checking if editor is on editors list for NavFit
@@ -142,10 +148,14 @@ public class JedisManager {
 	}
 
 	private static void removeEditorForNavFitUUID(String navfitUUID, String editorID, Jedis jedis) {
-		  
 	  String navfitEditorKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitEditorPrefix);
 
+	  String editorNavFitsKey = String.format("%s:%s:%s", editorPrefix, editorID, editorNavFitPrefix);
+
 		Long reply = jedis.srem(navfitEditorKey, editorID); 
+
+		//add navfituuid to editor:XXX:navfits key
+		jedis.srem(editorNavFitsKey, navfitUUID);	
 	}
 
 	public static void removeEditorForNavFitUUID(String navfitUUID, String removedEditorID, String existingEditorID, String authToken) {
@@ -162,7 +172,8 @@ public class JedisManager {
 
 		String reply = jedis.get(navfitDataKey);
 
-		String aesOutput = Encryptor.decrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), reply);
+		//String aesOutput = Encryptor.decrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), reply);
+		String aesOutput = reply;
 
 		return aesOutput;
 	}
@@ -186,7 +197,8 @@ public class JedisManager {
 
 		String navfitJSONString = navfitObj.toJSONString();
 
-		String aesOutput = Encryptor.encrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), navfitJSONString);
+		//String aesOutput = Encryptor.encrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), navfitJSONString);
+		String aesOutput = navfitJSONString;
 
 		String reply;
 	  if (expire) {
