@@ -136,7 +136,14 @@ public class HttpEditHandler implements HttpHandler {
 						if (!updatedNavFit.deleteFolderForFolderID(clientFolderID)) {
 							return (new JSONResponse(-1, "Could not delete NavFit", null, null)).toJSONString();
 						} 
-						return (new JSONResponse(0, clientFolderID + "Folder deleted.", null, null)).toJSONString();
+
+						//System.out.println(updatedNavFit.folders.size());
+
+						if (NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken)) {
+							return (new JSONResponse(0, clientFolderID + "Folder deleted.", null, null)).toJSONString();
+						} else {
+							return (new JSONResponse(-1, "Update fail", null, null)).toJSONString();
+						}
 					default:
 						return (new JSONResponse(-1, "Invalid " + Constants.editOpKey, null, null)).toJSONString();
 				}
@@ -165,7 +172,11 @@ public class HttpEditHandler implements HttpHandler {
 						if (!updatedNavFit.deleteReportForReportID(clientReportID)) {
 							return (new JSONResponse(-1, "Could not delete NavFit", null, null)).toJSONString();
 						} 
-						return (new JSONResponse(0, clientReportID + "Report deleted.", null, null)).toJSONString();
+
+						if (NavFitManagement.writeNavFitToRedis(updatedNavFit, targetUUID, editorID, authToken))
+							return (new JSONResponse(0, clientReportID + "Report deleted.", null, null)).toJSONString();
+						else
+							return (new JSONResponse(-1, "Update fail", null, null)).toJSONString();
 					default:
 						return (new JSONResponse(-1, "Invalid " + Constants.editOpKey, null, null)).toJSONString();
 				}

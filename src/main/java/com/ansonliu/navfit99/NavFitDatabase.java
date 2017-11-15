@@ -79,7 +79,7 @@ public class NavFitDatabase implements JSONAware {
 		Integer newFolderID = Integer.valueOf(newFolderObj.valueMap.get("FolderID").toString());
 
 		for (int i = 0; i < this.folders.size(); i++) {
-			if (this.folders.get(i).valueMap.get("FolderID").equals(newFolderID)) {
+			if (Integer.valueOf(this.folders.get(i).valueMap.get("FolderID").toString()).equals(newFolderID)) {
 				this.folders.set(i, newFolderObj);
 				return true;
 			}
@@ -97,7 +97,7 @@ public class NavFitDatabase implements JSONAware {
 		Integer newReportID = Integer.valueOf(newReportObj.valueMap.get("ReportID").toString());
 
 		for (int i = 0; i < this.reports.size(); i++) {
-			if (this.reports.get(i).valueMap.get("ReportID").equals(newReportID)) {
+			if (Integer.valueOf(this.reports.get(i).valueMap.get("ReportID").toString()).equals(newReportID)) {
 				this.reports.set(i, newReportObj);
 				return true;
 			}
@@ -109,7 +109,7 @@ public class NavFitDatabase implements JSONAware {
 
 	public boolean deleteFolderForFolderID(Integer folderID) {
 		for (int i = 0; i < this.folders.size(); i++) {
-			if (this.folders.get(i).valueMap.get("FolderID").equals(folderID)) {
+			if (Integer.valueOf(this.folders.get(i).valueMap.get("FolderID").toString()).equals(folderID)) {
 				this.folders.remove(i);
 				return true;
 			}
@@ -120,7 +120,7 @@ public class NavFitDatabase implements JSONAware {
 
 	public boolean deleteReportForReportID(Integer reportID) {
 		for (int i = 0; i < this.reports.size(); i++) {
-			if (this.reports.get(i).valueMap.get("ReportID").equals(reportID)) {
+			if (Integer.valueOf(this.reports.get(i).valueMap.get("ReportID").toString()).equals(reportID)) {
 				this.reports.remove(i);
 				return true;
 			}
