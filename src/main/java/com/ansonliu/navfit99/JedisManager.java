@@ -75,6 +75,14 @@ public class JedisManager {
 		return reply;
 	}
 
+	/*
+	public static boolean authenticateEditorIDForAuthToken(String editorID, String authToken) {
+		try (Jedis jedis = pool.getResource()) {
+			return authenticateEditorIDForAuthToken(editorID, authToken, jedis);
+		}
+	}
+	*/
+
 	//Check user authenticity -> If navfit is public -> If user is editor for navfit
 	private static boolean authenticateEditorIDAndAuthTokenForNavFitUUID(String editorID, String authToken, String navfitUUID, Jedis jedis) {
 		String navfitDataKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitDataPrefix);
@@ -96,6 +104,21 @@ public class JedisManager {
 			}
 		}
 		return false;
+	}
+
+	public static Set<String> getNavFitListForEditorID(String editorID, String authToken) {
+		try (Jedis jedis = pool.getResource()) {
+			if (authenticateEditorIDForAuthToken(editorID, authToken, jedis)) {
+				String editorNavFitsKey = String.format("%s:%s:%s", editorPrefix, editorID, editorNavFitPrefix);
+
+				System.out.println(editorNavFitsKey);
+				Set<String> navfitsList = jedis.smembers(editorNavFitsKey);
+				System.out.println(navfitsList);
+				return navfitsList;
+			} else {
+				return null;
+			}
+		}
 	}
 
 	public static boolean getEditorListForNavFitUUID(String navfitUUID, String editorID, String authToken) {

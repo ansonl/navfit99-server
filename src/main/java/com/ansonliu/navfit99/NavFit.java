@@ -50,6 +50,8 @@ public class NavFit {
 			
 			server.createContext("/file", new HttpFileHandler());
 			server.createContext("/edit", new HttpEditHandler());
+
+			server.createContext("/editor", new HttpEditorHandler());
 			server.start();
 
 			
