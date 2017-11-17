@@ -113,6 +113,25 @@ public class JedisManager {
 
 				System.out.println(editorNavFitsKey);
 				Set<String> navfitsList = jedis.smembers(editorNavFitsKey);
+
+				//Find expired navfits
+				Set<String> expiredNavfits = new HashSet<String>();
+				for (String navfitUUID : navfitsList) {
+					String navfitDataKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitDataPrefix);
+
+					if (jedis.exists(navfitDataKey).booleanValue() == false) {
+						jedis.srem(editorNavFitsKey, navfitUUID);
+						//Add to set no.2 to be removed from set no.1 later because removing it while iterating the same set will cause problems
+						expiredNavfits.add(navfitUUID);
+						System.out.println(navfitUUID + " not exist");
+					} else {
+						System.out.println(navfitUUID + " exist");
+					}
+				}
+				for (String navfitUUID : expiredNavfits) {
+					navfitsList.remove(navfitUUID);
+				}
+
 				System.out.println(navfitsList);
 				return navfitsList;
 			} else {
