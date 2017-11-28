@@ -41,10 +41,11 @@ public class HttpEditorHandler implements HttpHandler {
 			return (new JSONResponse(-1, "Missing " + Constants.editorIDKey + " " + Constants.authTokenKey, null, null)).toJSONString();
 
     Set<String> navfitsList = JedisManager.getNavFitListForEditorID(editorID, authToken);
-    if (navfitsList == null)
+    List<String> list = new ArrayList(navfitsList);
+    if (list == null)
     	return (new JSONResponse(-1, "Unable to get navfit list for editor. Incorrect editorID and authToken or editor does not exist.", null, null)).toJSONString();
     else
-    	return (new JSONResponse(0, null, navfitsList, null)).toJSONString();
+    	return (new JSONResponse(0, null, list, null)).toJSONString();
 	}
 
   @Override

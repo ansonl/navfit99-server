@@ -71,24 +71,19 @@ public class NavFitManagement {
 	public static void deleteFile(String fileUUID) throws NoSuchFileException, DirectoryNotEmptyException, IOException {
 		//System.out.println(fileUUID + this.dbExtension);
 		//File file = new File(fileUUID + this.dbExtension);
+		
 		File file = new File(String.format("%s.%s", fileUUID, Constants.dbExtension));
 		Path filePath = file.toPath();
-		//System.out.println(file.getAbsolutePath());
-
-		/*
-		try {
-		    
-		} catch (NoSuchFileException x) {
-		    System.err.format("%s: no such" + " file or directory%n", filePath);
-		} catch (DirectoryNotEmptyException x) {
-		    System.err.format("%s not empty%n", filePath);
-		} catch (IOException x) {
-		    // File permission problems are caught here.
-		    System.err.println(x);
-		}
-		*/
-
 		Files.delete(filePath);
+		
+	}
+
+	public static void removeNavFit(String fileUUID, String editorID, String authToken) throws Exception{
+		try {
+			JedisManager.removeNavFitDataForNavFitUUID(fileUUID, editorID, authToken);
+		} catch (Exception ex) {
+			throw ex;
+		}
 	}
 
 	public static void writeNavFitToFileSystem(NavFitDatabase obj, String fileUUID) {

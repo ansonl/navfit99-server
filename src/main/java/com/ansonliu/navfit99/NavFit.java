@@ -58,7 +58,7 @@ public class NavFit {
 			
 			NavFitDatabase emptyNavFitTest = new NavFitDatabase();
 			//emptyNavFitTest.loadFromDBFile("reference/NF98A_empty.accdb");
-			emptyNavFitTest.loadFromDBFile("reference/NF98A_empty.accdb");
+			//emptyNavFitTest.loadFromDBFile(Constants.nf98aEmptyPath);
 			System.out.println("Loaded empty NAVFIT test.");
 			//System.out.println(emptyNavFitTest.toJSONString());
 

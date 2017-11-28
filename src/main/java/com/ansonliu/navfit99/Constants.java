@@ -1,6 +1,9 @@
 package com.ansonliu.navfit99;
 
 public final class Constants {
+	public static final String nf98aEmptyPath = "reference/NF98A_empty.accdb";
+	public static final String nf98aEmptyWithRootName = "reference/NF98A_empty_root";
+
 	public static final String dbExtension = "accdb";
 	public static final String editorIDKey = "editorID";
 	public static final String authTokenKey = "authToken";

@@ -24,8 +24,6 @@ import com.sun.net.httpserver.HttpServer;
  */
 
 public class HttpNewFileHandler implements HttpHandler {
-	private static final String nf98aEmptyPath = "reference/NF98A_empty.accdb";
-
 	public String processAndMakeResponse(HttpExchange t) {
 		//Decode request body
     Map<String, String> bodyMap = HttpExchangeUtilities.getRequestBodyMapFromHttpExchange(t);
@@ -41,6 +39,7 @@ public class HttpNewFileHandler implements HttpHandler {
 		//If editorID and authToken provided, set editors for NavFit
     String editorID = null;
     String authToken = null;
+    
     if (bodyMap.containsKey(Constants.editorIDKey) && bodyMap.containsKey(Constants.authTokenKey)) {
       //Store navfit parsed data to Redis
       editorID = bodyMap.get(Constants.editorIDKey);
@@ -50,9 +49,12 @@ public class HttpNewFileHandler implements HttpHandler {
       	return (new JSONResponse(-1, "Invalid editorID and authToken", null, null)).toJSONString();
       }
     }
+
+    
+
     //SET data on database
     try {
-    	JedisManager.setNavFitDataForNavFitUUID(newUUID.toString(), editorID, authToken, new NavFitDatabase(), true);
+    	JedisManager.setNavFitDataForNavFitUUID(newUUID.toString(), editorID, authToken, new NavFitDatabase(Constants.nf98aEmptyWithRootName), true);
     	return (new JSONResponse(0, newUUID.toString(), null, null)).toJSONString();
 		} catch (Exception ex) {
 			return (new JSONResponse(-1, ex.getMessage(), null, null)).toJSONString();
@@ -63,9 +65,6 @@ public class HttpNewFileHandler implements HttpHandler {
 
   @Override
   public void handle(HttpExchange t) throws IOException {
-  	//Decode request body
-    Map<String, String> bodyMap = HttpExchangeUtilities.getRequestBodyMapFromHttpExchange(t);
-
   	String response = processAndMakeResponse(t);
 		System.out.println(response);
 

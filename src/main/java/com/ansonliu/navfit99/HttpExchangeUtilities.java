@@ -119,6 +119,7 @@ public class HttpExchangeUtilities {
     		i += 1;
     	}
     }
+		
 		/*
 		//Print out Map for debugging
 		for (Map.Entry<String, String> entry : bodyMap.entrySet()) {
@@ -126,8 +127,38 @@ public class HttpExchangeUtilities {
 		  String value = entry.getValue();
 		  System.out.println(String.format("%s %s", key, value));
 		}
-		 */
-		 
+		*/
+
+		return bodyMap;
+	}
+
+	public static Map<String, String> getRequestURLParamsFromHttpExchange(HttpExchange t) {
+		
+		Map<String, String> bodyMap = new HashMap<String, String>();
+
+		String decodedBody = t.getRequestURI().getQuery();
+
+    for (String bodyKVPair : decodedBody.split("&")) {
+    	int i = 0;
+    	String keyBuf = null;
+    	for (String bodyKVAlternating: bodyKVPair.split("=")) {
+    		if (i % 2 == 0)
+    			keyBuf = bodyKVAlternating.trim();
+    		else
+    			bodyMap.put(keyBuf, bodyKVAlternating.trim());
+
+    		i += 1;
+    	}
+    }
+		
+		/*
+		//Print out Map for debugging
+		for (Map.Entry<String, String> entry : bodyMap.entrySet()) {
+		  String key = entry.getKey();
+		  String value = entry.getValue();
+		  System.out.println(String.format("%s %s", key, value));
+		}
+		*/
 
 		return bodyMap;
 	}

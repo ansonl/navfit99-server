@@ -17,7 +17,7 @@ import net.ucanaccess.jdbc.UcanaccessConnection;
 import net.ucanaccess.jdbc.UcanaccessDriver;
 
 public class NavFitDatabase implements JSONAware {
-	private static final String nf98aEmptyPath = "reference/NF98A_empty.accdb";
+	//private static final String nf98aEmptyPath = "reference/NF98A_empty.accdb";
 	private static final String[] navfitTables = {"Folders", "Reports", "Summary"};
 	private static final String foldersKey = "folders";
 	private static final String reportsKey = "reports";
@@ -155,7 +155,7 @@ public class NavFitDatabase implements JSONAware {
 		}
 
 		try {
-			File emptyFile = new File(this.nf98aEmptyPath);
+			File emptyFile = new File(Constants.nf98aEmptyPath);
 			File navfitFile = new File(String.format("%s.%s",fileUUID,Constants.dbExtension));
 			copyFileUsingStream(emptyFile, navfitFile);
 		} catch (IOException ex) {
@@ -245,6 +245,12 @@ public class NavFitDatabase implements JSONAware {
 
 	public NavFitDatabase() {
 		super();
+
+		try {
+			loadFromDBFile(Constants.nf98aEmptyPath);
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
 	}
 
 }

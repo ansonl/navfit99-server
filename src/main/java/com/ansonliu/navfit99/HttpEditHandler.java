@@ -93,6 +93,13 @@ public class HttpEditHandler implements HttpHandler {
 							return (new JSONResponse(-1, "Update fail", null, null)).toJSONString();
 					case 3: //delete
 						try {
+							NavFitManagement.removeNavFit(targetUUID, editorID, authToken);
+						} catch (Exception ex) {
+						  return (new JSONResponse(-1, "Could not delete NavFit" + ex.getMessage(), null, null)).toJSONString();
+						}
+
+					/*
+						try {
 						  NavFitManagement.deleteFile(targetUUID);
 						} catch (NoSuchFileException x) {
 						  System.err.format("%s: no such" + " file or directory%n", targetUUID);
@@ -105,6 +112,7 @@ public class HttpEditHandler implements HttpHandler {
 						  System.err.println(x);
 						  return (new JSONResponse(-1, "Could not delete NavFit", null, null)).toJSONString();
 						}
+						*/
 						return (new JSONResponse(0, "NavFit deleted.", null, null)).toJSONString();
 					default:
 						return (new JSONResponse(-1, "Invalid " + Constants.editOpKey + " " + editOpNumber, null, null)).toJSONString();

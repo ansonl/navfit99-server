@@ -7,11 +7,13 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map.Entry;
 
-import java.sql.*;
+import java.lang.*;
+import java.nio.file.*;
 import java.io.*;
 import java.util.*;
-import java.lang.*;
+import java.sql.*;
 import java.net.*;
+import java.security.*;
 import org.json.simple.*;
 
 //import org.apache.commons.fileupload.*;
@@ -140,6 +142,17 @@ File[] listOfFiles = folder.listFiles();
             return (new JSONResponse(0, fileUUID.toString(), null, null)).toJSONString();
           } catch (NavFit99FatalException ex) {
             return (new JSONResponse(-1, "Error creating NavFit file. " + ex.getMessage(), null, null)).toJSONString();
+          } finally {
+            try {
+              NavFitManagement.deleteFile(fileUUID.toString());
+            } catch (NoSuchFileException x) {
+              System.err.format("%s: no such" + " file or directory%n", fileUUID.toString());
+            } catch (DirectoryNotEmptyException x) {
+              System.err.format("%s not empty%n", fileUUID.toString());
+            } catch (IOException x) {
+              // File permission problems are caught here.
+              System.err.println(x);
+            }
           }
 
         }

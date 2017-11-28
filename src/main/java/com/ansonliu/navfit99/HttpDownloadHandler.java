@@ -22,6 +22,12 @@ public class HttpDownloadHandler implements HttpHandler {
 		//Decode request body
     Map<String, String> bodyMap = HttpExchangeUtilities.getRequestBodyMapFromHttpExchange(t);
 
+    Map<String, String> getParamMap = HttpExchangeUtilities.getRequestURLParamsFromHttpExchange(t);
+
+    for (String key : getParamMap.keySet()) {
+    	bodyMap.put(key, getParamMap.get(key));
+    }
+
     //Get fileUUID
     String fileUUID = null;
     if (bodyMap.containsKey(Constants.fileUUIDKey)) {

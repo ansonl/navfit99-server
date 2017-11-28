@@ -3,6 +3,7 @@ package com.ansonliu.navfit99;
 import java.sql.*;
 import java.io.*;
 import java.util.*;
+import java.util.Arrays;
 import java.lang.*;
 import java.net.*;
 import org.json.simple.*;
@@ -165,6 +166,8 @@ public class JedisManager {
 
 	//Add editor to NavFit WITHOUT checking if editor is on editors list for NavFit
 	public static boolean addEditorForNavFitUUID(String navfitUUID, String editorID, String authToken) {
+		System.out.println(editorID + ":" + authToken);
+
 		try (Jedis jedis = pool.getResource()) {
 			//authenticate provided editorID and authToken
 			if (authenticateEditorIDForAuthToken(editorID, authToken, jedis)) {
@@ -272,8 +275,11 @@ public class JedisManager {
 	private static void removeNavFitDataForNavFitUUID(String navfitUUID, Jedis jedis) throws Exception {
 		String navfitDataKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitDataPrefix);
 		String navfitEditorKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitEditorPrefix);
+		
+		Long reply = jedis.del(navfitDataKey, navfitEditorKey);
 
-		Long reply = jedis.del(String.format("%S %S", navfitDataKey, navfitEditorKey));
+		System.out.println(navfitDataKey);
+		System.out.println(reply);
 	}
 
 	public static void removeNavFitDataForNavFitUUID(String navfitUUID, String editorID, String authToken) throws Exception {
