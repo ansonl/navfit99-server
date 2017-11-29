@@ -25,6 +25,7 @@ import com.sun.net.httpserver.HttpServer;
 
 public class HttpEditorHandler implements HttpHandler {
 	public String processAndMakeResponse(HttpExchange t) {
+
 		//Decode request body
   	Map<String, String> bodyMap = HttpExchangeUtilities.getRequestBodyMapFromHttpExchange(t);
 
@@ -36,6 +37,8 @@ public class HttpEditorHandler implements HttpHandler {
       editorID = bodyMap.get(Constants.editorIDKey);
       authToken = bodyMap.get(Constants.authTokenKey);
     }
+
+    
 
 		if (editorID == null || authToken == null)
 			return (new JSONResponse(-1, "Missing " + Constants.editorIDKey + " " + Constants.authTokenKey, null, null)).toJSONString();

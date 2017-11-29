@@ -6,12 +6,17 @@ import java.util.*;
 import java.util.Arrays;
 import java.lang.*;
 import java.net.*;
+import java.security.*;
+import java.nio.charset.*;
 import org.json.simple.*;
 
 import net.ucanaccess.converters.TypesMap.AccessType;
 import net.ucanaccess.ext.FunctionType;
 import net.ucanaccess.jdbc.UcanaccessConnection;
 import net.ucanaccess.jdbc.UcanaccessDriver;
+
+import org.apache.commons.codec.binary.Base64;
+
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -66,7 +71,19 @@ public class JedisManager {
 	private static boolean authenticateEditorIDForAuthToken(String editorID, String authToken, Jedis jedis) {
 		String editorTokenKey = String.format("%s:%s:%s", editorPrefix, editorID, editorAuthTokenPrefix);
 
-		boolean reply = jedis.sismember(editorTokenKey, authToken).booleanValue();
+		String authTokenDigestEncoded = authToken;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			System.out.println("test");
+			authTokenDigestEncoded = Base64.encodeBase64String(digest.digest(authToken.getBytes(StandardCharsets.UTF_8)));
+			System.out.println("test");
+		} catch (NoSuchAlgorithmException ex) {
+			System.out.println("Using SHA-256 error" + ex.getMessage());
+		}
+
+		System.out.println(authTokenDigestEncoded);
+		boolean reply = jedis.sismember(editorTokenKey, authTokenDigestEncoded).booleanValue();
+
 
 		//extend all auth token expirations for editorID
 		if (reply) {
@@ -275,7 +292,7 @@ public class JedisManager {
 	private static void removeNavFitDataForNavFitUUID(String navfitUUID, Jedis jedis) throws Exception {
 		String navfitDataKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitDataPrefix);
 		String navfitEditorKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitEditorPrefix);
-		
+
 		Long reply = jedis.del(navfitDataKey, navfitEditorKey);
 
 		System.out.println(navfitDataKey);
