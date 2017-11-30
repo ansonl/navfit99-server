@@ -234,8 +234,8 @@ public class JedisManager {
 
 		String reply = jedis.get(navfitDataKey);
 
-		//String aesOutput = Encryptor.decrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), reply);
-		String aesOutput = reply;
+		String aesOutput = Encryptor.decrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), reply);
+		//String aesOutput = reply;
 
 		return aesOutput;
 	}
@@ -259,7 +259,7 @@ public class JedisManager {
 
 		String navfitJSONString = navfitObj.toJSONString();
 
-		//String aesOutput = Encryptor.encrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), navfitJSONString);
+		String aesOutput = Encryptor.encrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), navfitJSONString);
 		String aesOutput = navfitJSONString;
 
 		String reply;
