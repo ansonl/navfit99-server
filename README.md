@@ -7,8 +7,6 @@
 
 ### Use NAVFITOnline at **[https://navfit99.github.io](https://navfit99.github.io)**. \
 
-
-
 -----
 
 #### Steps to host your own NAVFITOnline server:
@@ -44,4 +42,4 @@ This project was made possible because it builds upon great Java packages create
 - [Jedis - A blazingly small and sane redis java client](https://github.com/xetorthio/jedis)
 - [Sun HttpServer - Dependency free HttpServer included in Java](https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpServer.html)
 - [json-simple - Simple JSON encoding and decoding that just worked](https://github.com/fangyidong/json-simple)
-- [Apache Commons] (https://commons.apache.org/)
+- [Apache Commons](https://commons.apache.org/)
