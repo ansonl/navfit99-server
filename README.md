@@ -26,8 +26,8 @@
 ##### Notes
 
 - If you use Heroku for hosting, `$REDIS_URL` is provided for your instance if you use Heroku's *Heroku Redis* addon.\
-  - **Free Heroku instances do not support SSL connections and stunnel between the free instance and Heroku Redis instance. 
-  - ** See [here](https://devcenter.heroku.com/articles/securing-heroku-redis) for more information. 
+  - **Free Heroku instances do not support SSL connections and stunnel between the free instance and Heroku Redis instance. **
+  - See [here](https://devcenter.heroku.com/articles/securing-heroku-redis) for more information. 
 - `$NAVFIT_AES_KEY` will be truncated to 128 bits if it is longer than 128 bits.
 - Getting Maven setup didn't lead me to any good resources or examples. If you aren't interested in this project but want a drop in Maven configuration `pom.xml` file for starting your own project, you may find this project's `pom.xml` useful. Just update the package identifier, update dependency links, and you will have a working JAR that includes dependencies. 
  
