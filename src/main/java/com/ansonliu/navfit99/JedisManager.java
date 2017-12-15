@@ -65,7 +65,7 @@ public class JedisManager {
 	private static void setExpirationForEditorID(String editorID, Jedis jedis) {
 		String editorTokenKey = String.format("%s:%s:%s", editorPrefix, editorID, editorAuthTokenPrefix);
 
-		jedis.expire(editorID, 60*60);
+		jedis.expire(editorID, 60*60*24*7);
 	}
 
 	private static boolean authenticateEditorIDForAuthToken(String editorID, String authToken, Jedis jedis) {
@@ -264,9 +264,9 @@ public class JedisManager {
 
 		String reply;
 	  if (expire) {
-	  	reply = jedis.setex(navfitDataKey, 60*60, aesOutput);
+	  	reply = jedis.setex(navfitDataKey, 60*60*24*7, aesOutput);
 	  	if (reply.equals("OK"))
-	  		jedis.expire(navfitEditorKey, 60*60);
+	  		jedis.expire(navfitEditorKey, 60*60*24*7);
 	  } else {
 	  	reply = jedis.set(navfitDataKey, aesOutput);
 	  }
