@@ -260,7 +260,7 @@ public class JedisManager {
 		String navfitJSONString = navfitObj.toJSONString();
 
 		String aesOutput = Encryptor.encrypt(Encryptor.padTrimString(System.getenv("NAVFIT_AES_KEY"), 16), Encryptor.padTrimString(navfitUUID, 16), navfitJSONString);
-		String aesOutput = navfitJSONString;
+		//String aesOutput = navfitJSONString;
 
 		String reply;
 	  if (expire) {
