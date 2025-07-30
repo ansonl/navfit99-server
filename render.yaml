@@ -1,0 +1,28 @@
+# Schema documented at https://render.com/docs/yaml-spec
+services:
+  - type: web # valid values: https://render.com/docs/yaml-spec#type
+    name: navfit99
+    env: docker # valid values: https://render.com/docs/yaml-spec#environment
+    dockerfilePath: Dockerfile.render
+    plan: free # optional; defaults to starter
+    region: ohio
+    numInstances: 1
+    healthCheckPath: /editor
+    envVars:
+      - key: NAVFIT_AES_KEY
+        sync: false
+      # - key: DATABASE_URL # Render PostgreSQL database
+      #   fromDatabase:
+      #     name: postgresql-ams
+      #     property: connectionString
+      - key: REDIS_URL # Render Redis service
+        fromService:
+          type: redis
+          name: navfit99-redis
+          property: connectionString
+  - type: redis # Render Redis service
+    name: navfit99-redis
+    region: ohio
+    plan: free # optional (defaults to starter)
+    maxmemoryPolicy: allkeys-lru # optional (defaults to allkeys-lru)  
+    ipAllowList: []
