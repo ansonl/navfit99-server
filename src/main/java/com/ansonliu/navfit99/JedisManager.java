@@ -40,7 +40,9 @@ public class JedisManager {
 		}
 		if (redisConnectionURI != null) {
 			pool = new JedisPool(config, redisConnectionURI);
-			//System.out.println("Created redis connection pool.");
+			System.out.println("Created redis connection pool.");
+		} else {
+			System.out.println("redisConnectionURI is null");
 		}
 	}
 
