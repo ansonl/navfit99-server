@@ -16,13 +16,4 @@ services:
       #     name: postgresql-ams
       #     property: connectionString
       - key: REDIS_URL # Render Redis service
-        fromService:
-          type: redis
-          name: navfit99-redis
-          property: connectionString
-  - type: redis # Render Redis service
-    name: navfit99-redis
-    region: ohio
-    plan: free # optional (defaults to starter)
-    maxmemoryPolicy: allkeys-lru # optional (defaults to allkeys-lru)  
-    ipAllowList: []
+        sync: false
