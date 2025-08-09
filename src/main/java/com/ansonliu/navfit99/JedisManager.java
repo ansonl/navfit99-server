@@ -3,7 +3,6 @@ package com.ansonliu.navfit99;
 import java.sql.*;
 import java.io.*;
 import java.util.*;
-import java.util.Arrays;
 import java.lang.*;
 import java.net.*;
 import java.security.*;
@@ -20,7 +19,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -37,10 +35,17 @@ public class JedisManager {
 			redisConnectionURI = new URI(System.getenv("REDIS_URL"));
 		} catch (URISyntaxException ex) {
 			System.out.println("Creating URI for redis exception: " + ex.getMessage());
+			ex.printStackTrace();
 		}
 		if (redisConnectionURI != null) {
+			System.out.println(String.format("URL %s", redisConnectionURI));
 			pool = new JedisPool(config, redisConnectionURI);
 			System.out.println("Created redis connection pool.");
+			try {
+				pool.getResource().close();
+			} catch (Exception ex) {
+				System.out.println("Getting pool resource error " + ex.getMessage());
+			}
 		} else {
 			System.out.println("redisConnectionURI is null");
 		}
@@ -60,7 +65,7 @@ public class JedisManager {
 		try (Jedis jedis = pool.getResource()) {
 			String navfitDataKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitDataPrefix);
 
-		  return jedis.exists(navfitDataKey).booleanValue();
+		  return jedis.exists(navfitDataKey);
 		}	
 	}
 
@@ -84,7 +89,7 @@ public class JedisManager {
 		}
 
 		System.out.println(authTokenDigestEncoded);
-		boolean reply = jedis.sismember(editorTokenKey, authTokenDigestEncoded).booleanValue();
+		boolean reply = jedis.sismember(editorTokenKey, authTokenDigestEncoded);
 
 
 		//extend all auth token expirations for editorID
@@ -110,14 +115,14 @@ public class JedisManager {
 
 		if (editorID != null && authToken != null) {
 			if (authenticateEditorIDForAuthToken(editorID, authToken, jedis)) {
-				if (jedis.exists(navfitEditorKey).booleanValue()) { //check if navfit has editor list
-					return jedis.sismember(navfitEditorKey, editorID).booleanValue();
+				if (jedis.exists(navfitEditorKey)) { //check if navfit has editor list
+					return jedis.sismember(navfitEditorKey, editorID);
 				} else {
 					return true; //return true if no editor list exists for existing navfit, navfit is public
 				}
 			} 
 		} else { //user no supply editorID or authToken
-			if (jedis.exists(navfitEditorKey).booleanValue()) { //check if navfit has editor list
+			if (jedis.exists(navfitEditorKey)) { //check if navfit has editor list
 				return false;
 			} else {
 				return true; //return true if no editor list exists for existing navfit, navfit is public
@@ -139,7 +144,7 @@ public class JedisManager {
 				for (String navfitUUID : navfitsList) {
 					String navfitDataKey = String.format("%s:%s:%s", navfitPrefix, navfitUUID, navfitDataPrefix);
 
-					if (jedis.exists(navfitDataKey).booleanValue() == false) {
+					if (jedis.exists(navfitDataKey) == false) {
 						jedis.srem(editorNavFitsKey, navfitUUID);
 						//Add to set no.2 to be removed from set no.1 later because removing it while iterating the same set will cause problems
 						expiredNavfits.add(navfitUUID);
